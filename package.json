@@ -1,0 +1,19 @@
+{
+  "name": "saveeasily",
+  "version": "1.2.0",
+  "description": "A discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pooria Ahmadi",
+  "license": "ISC",
+  "dependencies": {
+    "async-limiter": "^2.0.0",
+    "dblapi.js": "^2.4.1",
+    "discord.js": "^12.5.1",
+    "discord.js-v11": "^12.1.1",
+    "dotenv": "^8.2.0",
+    "mysql": "^2.18.1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "mysqlHost" : "localhost",
+    "mysqlUser" : "root",
+    "mysqlPass" : "",
+    "mysqlDatabase" : "saveeasily",
+    "TOKEN" : "TOKEN"
+}

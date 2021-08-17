@@ -4,19 +4,22 @@
 	"description": "A discord bot for saving stuff",
 	"main": "index.js",
 	"scripts": {
-		"start": "node index.js",
-		"dev": "nodemon index.js",
-		"register dev": "node register-commands.js dev",
-		"register": "node register-commands.js global"
+		"start": "npm run build && node build/index.js",
+		"dev": "nodemon src/index.ts",
+		"register dev": "node src/register-commands.ts dev",
+		"register": "node src/register-commands.ts global",
+		"build": "rimraf ./build && tsc"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"discord.js": "^13.1.0"
+		"chalk": "^4.1.2",
+		"discord.js": "^13.1.0",
+		"dotenv": "^10.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^16.6.1",
-		"eslint": "^7.32.0",
-		"eslint-config-google": "^0.14.0"
+		"ts-node": "^10.2.0",
+		"typescript": "^4.3.5"
 	}
 }

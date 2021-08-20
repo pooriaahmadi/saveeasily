@@ -1,35 +1,62 @@
-import { commandInterface, optionInterface } from "../types";
+import {
+	commandInterface,
+	optionInterface,
+	CommandModel,
+	executeInputs,
+} from "../types";
 import { staff } from "../config";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-
-class Command {
+import Users from "../databases/users";
+class Command implements CommandModel {
 	staffRequired;
+	accountRequired;
 	execute;
 	slashCommand;
 	description;
 	options;
 	constructor({
 		staffRequired = false,
+		accountRequired = false,
 		execute,
 		description,
 		options = [],
 	}: commandInterface) {
 		this.staffRequired = staffRequired;
+		this.accountRequired = accountRequired;
 		this.execute = execute;
 		this.slashCommand = new SlashCommandBuilder().setDescription(description);
 		this.description = description;
 		this.options = options; // Bunch of options with Option class
 	}
-	run = (interaction: CommandInteraction) => {
+	run = async ({ interaction, client }: executeInputs) => {
 		if (this.staffRequired) {
 			staff.forEach((item) => {
 				if (interaction.member?.user.id === item.toString()) {
-					return this.execute(interaction);
+					return this.execute({ interaction: interaction, client: client });
 				}
 			});
+			return interaction.reply({
+				content: "This command is staff only",
+				ephemeral: true,
+			});
 		}
-		return this.execute(interaction);
+		if (this.accountRequired) {
+			const user = await Users.getByDiscordId(interaction.member?.user.id);
+			if (user) {
+				return this.execute({
+					interaction: interaction,
+					client: client,
+					user: user,
+				});
+			} else {
+				return interaction.reply({
+					content: "Please create an account first using /register.",
+					ephemeral: true,
+				});
+			}
+		}
+		return this.execute({ interaction: interaction, client: client });
 	};
 	toJSON = (name: string) => {
 		this.slashCommand.setName(name);

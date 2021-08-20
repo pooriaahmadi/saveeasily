@@ -16,8 +16,13 @@ fs.readdirSync(path.join(__dirname, "commands"))
 		console.log(chalk.cyanBright(`Loaded ${file}`));
 		commands[file.replace(".js", "").replace(".ts", "")] = command;
 	});
+const updateStatus = () => {
+	client.user?.setActivity(`${client.guilds.cache.size} Guilds!`);
+};
 client.once("ready", () => {
 	console.log(chalk.greenBright(`Logged in as ${client.user?.username}`));
+	updateStatus();
+	setInterval(updateStatus, 60 * 1000);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -25,11 +30,12 @@ client.on("interactionCreate", async (interaction) => {
 	const command = commands[interaction.commandName];
 	if (!command) return;
 	try {
-		await command.run(interaction);
+		await command.run({ interaction: interaction, client: client });
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({
-			content: "This command occured an error, So please consider waiting until my developers ",
+			content:
+				"This command occured an error, So please consider waiting until my developers ",
 			ephemeral: true,
 		});
 	}

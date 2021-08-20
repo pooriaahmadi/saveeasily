@@ -5,24 +5,28 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node build/index.js",
-		"dev": "nodemon src/index.ts",
-		"register-dev": "ts-node src/register-commands.ts dev",
-		"register": "ts-node src/register-commands.ts global",
+		"dev": "nodemon",
+		"register-dev": "ts-node src/excludes/register-commands.ts dev",
+		"register": "ts-node src/excludes/register-commands.ts global",
 		"build": "rimraf ./build && tsc"
 	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
 		"@discordjs/rest": "0.1.0-canary.0",
-		"@types/node-fetch": "^2.5.12",
+		"canvas": "^2.8.0",
 		"chalk": "^4.1.2",
 		"discord.js": "^13.1.0",
 		"dotenv": "^10.0.0",
+		"mysql": "^2.18.1",
+		"systeminformation": "^5.8.0"
+	},
+	"devDependencies": {
+		"@types/mysql": "^2.15.19",
+		"@types/node": "^16.6.1",
+		"@types/node-fetch": "^2.5.12",
 		"ts-node": "^10.2.0",
 		"tslib": "^2.3.1",
 		"typescript": "^4.3.5"
-	},
-	"devDependencies": {
-		"@types/node": "^16.6.1"
 	}
 }

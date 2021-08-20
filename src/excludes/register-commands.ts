@@ -1,6 +1,7 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { clientId, testGuild } from "../config";
+import path from "path/posix";
 import Command from "../classes/command";
 import fs from "fs";
 import chalk from "chalk";
@@ -9,10 +10,10 @@ dotenv.config();
 const args = process.argv.splice(2);
 const commands: Array<Command> = [];
 const commandFiles = fs
-	.readdirSync("./src/commands")
+	.readdirSync(path.resolve("./src/commands"))
 	.filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of commandFiles) {
-	const command = require(`./commands/${file}`).default;
+	const command = require(path.resolve(`./src/commands/${file}`)).default;
 	commands.push(command.toJSON(file.replace(".js", "").replace(".ts", "")));
 }
 

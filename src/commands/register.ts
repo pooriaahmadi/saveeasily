@@ -3,9 +3,7 @@ import Embed from "../classes/embed";
 import { executeInputs, userModel } from "../types";
 import Users from "../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
-	const user: userModel | boolean = await Users.getByDiscordId(
-		interaction.member?.user.id
-	);
+	const user = await Users.getByDiscordId(interaction.member?.user.id);
 	if (user) {
 		return await interaction.reply({
 			embeds: [new Embed().data.setTitle("You already have an account!")],

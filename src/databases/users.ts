@@ -33,8 +33,6 @@ class Users implements usersModel {
 				isStaff: user.is_staff,
 				isVip: user.is_vip,
 			});
-		} else {
-			return false;
 		}
 	};
 	getByDiscordId = async (id: string | undefined) => {
@@ -52,8 +50,6 @@ class Users implements usersModel {
 				isStaff: user.is_staff,
 				isVip: user.is_vip,
 			});
-		} else {
-			return false;
 		}
 	};
 	getStaffs = async () => {
@@ -86,6 +82,14 @@ class Users implements usersModel {
 			isStaff: false,
 			isVip: false,
 		});
+	};
+	savesCount = async () => {
+		const result: any = await Main.createQuery("SELECT COUNT(*) FROM saves");
+		return result[0]["COUNT(*)"];
+	};
+	usersCount = async () => {
+		const result: any = await Main.createQuery("SELECT COUNT(*) FROM users");
+		return result[0]["COUNT(*)"];
 	};
 }
 

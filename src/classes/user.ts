@@ -1,5 +1,11 @@
-import { userModelInputs, userModel, discordInformation } from "../types";
+import {
+	userModelInputs,
+	userModel,
+	discordInformation,
+	userAddInputs,
+} from "../types";
 import Main from "../databases/main";
+import Save from "./save";
 class User implements userModel {
 	id;
 	discordId;
@@ -87,6 +93,68 @@ class User implements userModel {
 		} catch (error) {
 			return false;
 		}
+	};
+	add = async ({ title, content, media }: userAddInputs) => {
+		const result: any = await Main.createQuery(
+			`INSERT INTO saves (id, user, title, content, media) VALUES (NULL, ${
+				this.id
+			}, ${title ? `'${title}'` : "NULL"}, '${content}', ${
+				media ? `'${media}'` : "NULL"
+			})`
+		);
+		return new Save({
+			id: result.insertId,
+			content: content,
+			title: title,
+			media: media,
+		});
+	};
+	saves = async () => {
+		const rawSaves: any = await Main.createQuery(
+			`SELECT * FROM saves WHERE user=${this.id}`
+		);
+		return rawSaves.map((item: { [key: string]: any }) => {
+			return new Save({
+				id: item.id,
+				content: item.content,
+				title: item.title,
+				media: item.media,
+			});
+		});
+	};
+	getSave = async (id: number) => {
+		let result: any = await Main.createQuery(
+			`SELECT * FROM saves WHERE id=${id}`
+		);
+		if (result.length) {
+			result = result[0];
+			if (result.user === this.id) {
+				return new Save({
+					id: result.id,
+					title: result.title,
+					content: result.content,
+					media: result.media,
+				});
+			}
+		}
+		return null;
+	};
+	addUsedCommand = async (value: number) => {
+		this.usedCommands += value;
+		await Main.createQuery(
+			Main.resolveUpdateValues({
+				values: {
+					used_commands: String(this.usedCommands),
+				},
+				table: "users",
+			}) + `WHERE id=${this.id}`
+		);
+	};
+	savesCount = async () => {
+		const result: any = await Main.createQuery(
+			`SELECT COUNT(*) FROM saves WHERE user=${this.id}`
+		);
+		return result[0]["COUNT(*)"];
 	};
 }
 

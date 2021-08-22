@@ -1,13 +1,12 @@
 import {
 	commandInterface,
-	optionInterface,
+	optionModel,
 	CommandModel,
 	executeInputs,
+	choiceModel,
 } from "../types";
-import { staff } from "../config";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
-import Users from "../databases/users";
+import { runAuthenticate } from "./authentication";
 class Command implements CommandModel {
 	staffRequired;
 	accountRequired;
@@ -30,41 +29,26 @@ class Command implements CommandModel {
 		this.options = options; // Bunch of options with Option class
 	}
 	run = async ({ interaction, client }: executeInputs) => {
-		if (this.staffRequired) {
-			staff.forEach((item) => {
-				if (interaction.member?.user.id === item.toString()) {
-					return this.execute({ interaction: interaction, client: client });
-				}
-			});
-			return interaction.reply({
-				content: "This command is staff only",
-				ephemeral: true,
-			});
-		}
-		if (this.accountRequired) {
-			const user = await Users.getByDiscordId(interaction.member?.user.id);
-			if (user) {
-				return this.execute({
-					interaction: interaction,
-					client: client,
-					user: user,
-				});
-			} else {
-				return interaction.reply({
-					content: "Please create an account first using /register.",
-					ephemeral: true,
-				});
-			}
-		}
-		return this.execute({ interaction: interaction, client: client });
+		await runAuthenticate({
+			staffRequired: this.staffRequired,
+			interaction: interaction,
+			client: client,
+			execute: this.execute,
+			accountRequired: this.accountRequired,
+		});
 	};
 	toJSON = (name: string) => {
 		this.slashCommand.setName(name);
-		const setOption = (data: any, option: optionInterface) => {
+		const setOption = (data: any, option: optionModel) => {
 			data
 				.setName(option.name)
 				.setDescription(option.description)
 				.setRequired(option.required);
+			if (option.choices.length) {
+				option.choices.forEach((choice: choiceModel) => {
+					data.addChoice(choice.displayName, choice.name);
+				});
+			}
 			return data;
 		};
 		this.options.forEach((option) => {
@@ -72,11 +56,19 @@ class Command implements CommandModel {
 				case "string":
 					this.slashCommand.addStringOption((data) => setOption(data, option));
 					break;
-				case "number":
+				case "integer":
 					this.slashCommand.addIntegerOption((data) => setOption(data, option));
 					break;
 				case "boolean":
 					this.slashCommand.addBooleanOption((data) => setOption(data, option));
+					break;
+				case "mentionable":
+					this.slashCommand.addMentionableOption((data) =>
+						setOption(data, option)
+					);
+					break;
+				case "user":
+					this.slashCommand.addUserOption((data) => setOption(data, option));
 					break;
 				default:
 					break;

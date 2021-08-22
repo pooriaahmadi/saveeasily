@@ -2,6 +2,7 @@ import Command from "../classes/command";
 import { executeInputs } from "../types";
 import Embed from "../classes/embed";
 import si from "systeminformation";
+import Users from "../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
 	await interaction.reply({
 		embeds: [new Embed().data.setTitle("Please wait...")],
@@ -23,6 +24,11 @@ const execute = async ({ interaction, client }: executeInputs) => {
 	embed.data
 		.setTitle(`${client.user?.username} Stats`)
 		.setThumbnail(String(client.user?.avatarURL()))
+		.addField("Servers", "**`" + client.guilds.cache.size + "`**", true)
+		.addField("Members", "**`" + client.users.cache.size + "`**", true)
+		.addField("Channels", "**`" + client.channels.cache.size + "`**", true)
+		.addField("Saves", `**\`${await Users.savesCount()}\`**`, true)
+		.addField("Users", `**\`${await Users.usersCount()}\`**`, true)
 		.addField(
 			"Cpu",
 			"```brand: " +
@@ -58,6 +64,7 @@ const execute = async ({ interaction, client }: executeInputs) => {
 };
 
 export default new Command({
+	staffRequired: true,
 	execute: execute,
 	description: "SaveEasily Status",
 });

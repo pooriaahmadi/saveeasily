@@ -1,24 +1,34 @@
 // modules
-import { Client, Intents } from "discord.js";
+import { Intents } from "discord.js";
+import Client from "./classes/Client";
 import Command from "./classes/command";
 import chalk from "chalk";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
-import { contextMenuModel } from "./types";
+import { CategoryModel, CommandModel, contextMenuModel } from "./types";
 // actual app
 dotenv.config();
+
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-const commands: { [key: string]: Command } = {};
-const contextMenus: { [key: string]: contextMenuModel } = {};
 console.log(chalk.yellow("=-=-=-= Slash Commands =-=-=-="));
-fs.readdirSync(path.join(__dirname, "commands"))
-	.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
-	.forEach((file) => {
-		const command: Command = require(`./commands/${file}`).default;
+fs.readdirSync(path.join(__dirname, "commands")).forEach((dir) => {
+	const category: CategoryModel = require(path.join(
+		__dirname,
+		"commands",
+		dir
+	)).default;
+	client.categories[dir] = category;
+	category.getCommands(dir).forEach((file) => {
+		const command: Command = require(`./commands/${dir}/${file}`).default;
 		console.log(chalk.cyanBright(`Loaded Command ${file}`));
-		commands[file.replace(".js", "").replace(".ts", "")] = command;
+		client.commands[file.replace(".js", "").replace(".ts", "")] = {
+			class: command,
+			category: dir,
+		};
 	});
+});
+
 console.log(chalk.yellow("=-=-=-= Context Menus =-=-=-="));
 fs.readdirSync(path.join(__dirname, "context-menus"))
 	.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
@@ -26,7 +36,7 @@ fs.readdirSync(path.join(__dirname, "context-menus"))
 		const contextMenu: contextMenuModel =
 			require(`./context-menus/${file}`).default;
 		console.log(chalk.cyanBright(`Loaded Context Menu ${file}`));
-		contextMenus[contextMenu.name] = contextMenu;
+		client.contextMenus[contextMenu.name] = contextMenu;
 	});
 const updateStatus = () => {
 	client.user?.setActivity(`${client.guilds.cache.size} Guilds!`, {
@@ -42,12 +52,12 @@ client.once("ready", () => {
 client.on("interactionCreate", async (interaction) => {
 	try {
 		if (interaction.isContextMenu()) {
-			const contextMenu = contextMenus[interaction.commandName];
+			const contextMenu: any = client.contextMenus[interaction.commandName];
 			if (!contextMenu) return;
 			await contextMenu.run({ interaction, client });
 		}
 		if (interaction.isCommand()) {
-			const command = commands[interaction.commandName];
+			const command = client.commands[interaction.commandName].class;
 			if (!command) return;
 			await command.run({ interaction: interaction, client: client });
 		}

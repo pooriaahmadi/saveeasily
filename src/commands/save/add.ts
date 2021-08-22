@@ -1,7 +1,7 @@
-import Command from "../classes/command";
-import { executeInputs } from "../types";
-import Embed from "../classes/embed";
-import Option from "../classes/option";
+import Command from "../../classes/command";
+import { executeInputs } from "../../types";
+import Embed from "../../classes/embed";
+import Option from "../../classes/option";
 
 const execute = async ({ interaction, client, user }: executeInputs) => {
 	const content = interaction.options.getString("content", true);

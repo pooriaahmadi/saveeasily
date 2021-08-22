@@ -1,7 +1,7 @@
-import Command from "../classes/command";
-import { executeInputs, saveModel } from "../types";
-import Embed from "../classes/embed";
-import Option from "../classes/option";
+import Command from "../../classes/command";
+import { executeInputs, saveModel } from "../../types";
+import Embed from "../../classes/embed";
+import Option from "../../classes/option";
 const execute = async ({ interaction, client, user }: executeInputs) => {
 	const id = interaction.options.getInteger("id", true);
 	const save = await user?.getSave(id);
@@ -21,7 +21,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 				new Embed().data
 					.setTitle("Save has legs!")
 					.setDescription(
-						"It seems that requested save has ran away... or is not essentially yours"
+						"**`404`**: It seems that requested save has ran away... or is not essentially yours"
 					),
 			],
 			ephemeral: true,

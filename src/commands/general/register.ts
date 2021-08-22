@@ -1,7 +1,7 @@
-import Command from "../classes/command";
-import Embed from "../classes/embed";
-import { executeInputs, userModel } from "../types";
-import Users from "../databases/users";
+import Command from "../../classes/command";
+import Embed from "../../classes/embed";
+import { executeInputs, userModel } from "../../types";
+import Users from "../../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
 	const user = await Users.getByDiscordId(interaction.member?.user.id);
 	if (user) {

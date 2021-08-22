@@ -1,8 +1,8 @@
-import Command from "../classes/command";
-import { executeInputs, userModel } from "../types";
-import Embed from "../classes/embed";
-import Option from "../classes/option";
-import Users from "../databases/users";
+import Command from "../../classes/command";
+import { executeInputs, userModel } from "../../types";
+import Embed from "../../classes/embed";
+import Option from "../../classes/option";
+import Users from "../../databases/users";
 
 const execute = async ({ interaction, client, user }: executeInputs) => {
 	const mentionedUser = interaction.options.getUser("user", false);

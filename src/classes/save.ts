@@ -45,6 +45,9 @@ class Save implements saveModel {
 		);
 		this.media = newMedia;
 	};
+	delete = async () => {
+		await Main.createQuery(`DELETE FROM saves WHERE id=${this.id}`);
+	};
 }
 
 export default Save;

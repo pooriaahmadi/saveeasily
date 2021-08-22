@@ -1,8 +1,8 @@
-import Command from "../classes/command";
-import { executeInputs } from "../types";
+import Command from "../../classes/command";
+import { executeInputs } from "../../types";
 import { SelectMenuInteraction } from "discord.js";
 import { MessageActionRow, MessageSelectMenu } from "discord.js";
-import Embed from "../classes/embed";
+import Embed from "../../classes/embed";
 
 const execute = async ({ interaction, client, user }: executeInputs) => {
 	const saves = await user?.saves();

@@ -1,8 +1,8 @@
-import Command from "../classes/command";
-import { executeInputs } from "../types";
-import Embed from "../classes/embed";
+import Command from "../../classes/command";
+import { executeInputs } from "../../types";
+import Embed from "../../classes/embed";
 import si from "systeminformation";
-import Users from "../databases/users";
+import Users from "../../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
 	await interaction.reply({
 		embeds: [new Embed().data.setTitle("Please wait...")],

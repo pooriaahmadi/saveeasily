@@ -156,6 +156,9 @@ class User implements userModel {
 		);
 		return result[0]["COUNT(*)"];
 	};
+	deleteSaves = async () => {
+		await Main.createQuery(`DELETE FROM saves WHERE user=${this.id}`);
+	};
 }
 
 export default User;

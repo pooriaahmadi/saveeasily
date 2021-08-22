@@ -1,7 +1,6 @@
 import { CommandInteraction, ContextMenuInteraction } from "discord.js";
 import { Connection } from "mysql";
-import { Client } from "discord.js";
-
+import Client from "./classes/Client";
 export interface choiceModel {
 	displayName: string;
 	name: string;
@@ -136,6 +135,7 @@ export interface userModel {
 	savesCount: () => Promise<number>;
 	getSave: (id: number) => Promise<saveModel | null>;
 	addUsedCommand: (value: number) => Promise<void>;
+	deleteSaves: () => Promise<void>;
 }
 
 export interface usersModelInput {
@@ -174,6 +174,7 @@ export interface saveModel {
 	updateMedia: (newMedia: string) => Promise<void>;
 	updateContent: (newContent: string) => Promise<void>;
 	updateTitle: (newTitle: string) => Promise<void>;
+	delete: () => Promise<void>;
 }
 
 export interface executeInputsContextMenu {
@@ -211,4 +212,15 @@ export interface contextMenuModel {
 	}: executeInputsContextMenu) => Promise<void>;
 	run: ({ interaction, client }: executeInputsContextMenu) => Promise<void>;
 	toJSON: () => { [key: string]: string | number };
+}
+export interface CategoryInputs {
+	name: string;
+	emoji?: string;
+	description?: string;
+}
+export interface CategoryModel {
+	name: string;
+	emoji?: string;
+	description?: string;
+	getCommands: (dirName: string) => string[];
 }

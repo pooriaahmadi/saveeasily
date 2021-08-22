@@ -6,17 +6,24 @@ import Command from "../classes/command";
 import fs from "fs";
 import chalk from "chalk";
 import dotenv from "dotenv";
-import { contextMenuModel } from "../types";
+import { contextMenuModel, CategoryModel } from "../types";
 dotenv.config();
 const args = process.argv.splice(2);
-const commands: Array<Command> = [];
-const commandFiles = fs
-	.readdirSync(path.resolve("./src/commands"))
-	.filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
-for (const file of commandFiles) {
-	const command = require(path.resolve(`./src/commands/${file}`)).default;
-	commands.push(command.toJSON(file.replace(".js", "").replace(".ts", "")));
-}
+const commands: Array<{ [key: string]: any }> = [];
+fs.readdirSync(path.resolve("./src/commands")).forEach((dir) => {
+	const category: CategoryModel = require(path.resolve(
+		`./src/commands/${dir}`
+	)).default;
+	category.getCommands(dir).forEach((file) => {
+		const command: Command = require(path.resolve(
+			`./src/commands/${dir}/${file}`
+		)).default;
+
+		console.log(chalk.cyanBright(`Loaded Command ${file}`));
+		commands.push(command.toJSON(file.replace(".js", "").replace(".ts", "")));
+	});
+});
+
 const contextMenus: { [key: string]: string | number }[] = [];
 fs.readdirSync(path.resolve("./src/context-menus"))
 	.filter((file) => file.endsWith(".js") || file.endsWith(".ts"))
@@ -24,6 +31,8 @@ fs.readdirSync(path.resolve("./src/context-menus"))
 		const contextMenu: contextMenuModel = require(path.resolve(
 			`./src/context-menus/${file}`
 		)).default;
+		console.log(chalk.cyanBright(`Loaded Context Menu ${file}`));
+
 		contextMenus.push(contextMenu.toJSON());
 	});
 

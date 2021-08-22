@@ -9,6 +9,7 @@ const execute = async ({ interaction, client }: executeInputs) => {
 	const source = interaction.options.getString("source", true);
 	const content = JSON.parse(fs.readFileSync(filePath, "utf8"));
 	content[source] = channel.id;
+	client.database[source] = channel.id;
 	fs.writeFileSync(filePath, JSON.stringify(content));
 	return await interaction.reply({
 		content: `Field ${source} has been set to ${channel.id}`,

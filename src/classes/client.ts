@@ -4,5 +4,6 @@ class Client extends DjsClient {
 	categories: { [key: string]: CategoryModel } = {};
 	commands: { [ket: string]: { class: CommandModel; category: string } } = {};
 	contextMenus: { [key: string]: contextMenuModel } = {};
+	database: { [key: string]: string } = {};
 }
 export default Client;

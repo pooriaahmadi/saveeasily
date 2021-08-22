@@ -11,7 +11,8 @@ export type optionTypes =
 	| "integer"
 	| "boolean"
 	| "mentionable"
-	| "user";
+	| "user"
+	| "channel";
 
 export interface optionInterface {
 	type: optionTypes;

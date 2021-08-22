@@ -64,28 +64,32 @@ const execute = async ({ interaction, client }: executeInputs) => {
 			if (command.category === key) {
 				embed.addField(
 					item.toLocaleUpperCase(),
-					`**Permissions:** ${
-						permissionsString || "`No permissions`"
-					}\n**Description:** ${command.class.description}\n**Options:** ${
+					`${
+						permissionsString
+							? "**Permissions:** " + permissionsString + "\n"
+							: ""
+					}**Description:** ${command.class.description}\n${
 						command.class.options.length
-							? command.class.options
+							? "**Options:** " +
+							  command.class.options
 									.map((item) => {
 										return `\`\`\`Name: ${item.name}\nDescription: ${
 											item.description
 										}\nType: ${item.type}\nRequired? ${
 											item.required ? "Yes" : "No"
-										}\nChoices: ${
-											item.choices.length
+										}\n${
+											"Choices: " + item.choices.length
 												? item.choices
 														.map((choice) => {
 															return `${choice.displayName}`;
 														})
 														.join(", ")
-												: "No choices"
+												: ""
 										}\`\`\``;
 									})
-									.join("\n")
-							: "`No options`"
+									.join("\n") +
+							  "\n"
+							: ""
 					}`,
 					true
 				);

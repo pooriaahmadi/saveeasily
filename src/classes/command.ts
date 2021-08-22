@@ -70,6 +70,10 @@ class Command implements CommandModel {
 				case "user":
 					this.slashCommand.addUserOption((data) => setOption(data, option));
 					break;
+				case "channel":
+					this.slashCommand.addChannelOption((data) => setOption(data, option));
+					break;
+
 				default:
 					break;
 			}

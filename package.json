@@ -5,6 +5,7 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"start": "npm run build && node build/index.js",
+		"start-build": "node build/index.js",
 		"dev": "nodemon",
 		"register-dev": "ts-node src/excludes/register-commands.ts dev",
 		"register": "ts-node src/excludes/register-commands.ts global",

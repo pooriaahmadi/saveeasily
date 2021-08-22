@@ -1,5 +1,4 @@
 import Users from "../databases/users";
-import { staff } from "../config";
 import { Client, CommandInteraction, ContextMenuInteraction } from "discord.js";
 
 export const runAuthenticate = async ({
@@ -15,35 +14,29 @@ export const runAuthenticate = async ({
 	client: Client;
 	execute: any;
 }) => {
-	if (staffRequired) {
-		for (const item of staff) {
-			if (interaction.user.id === item) {
-				const user = await Users.getByDiscordId(interaction.user.id);
-				return execute({
-					interaction: interaction,
-					client: client,
-					user: user,
-				});
-			}
-		}
-		return interaction.reply({
-			content: "This command is staff only",
-			ephemeral: true,
-		});
-	}
-	if (accountRequired) {
+	if (staffRequired || accountRequired) {
 		const user = await Users.getByDiscordId(interaction.member?.user.id);
 		if (user) {
-			if (
-				interaction.user.username !== user.username ||
-				interaction.user.discriminator !== user.discriminator
-			) {
-				await user.updateDiscordInformation({
-					username: interaction.user.username,
-					discriminator: interaction.user.discriminator,
-				});
+			if (staffRequired) {
+				if (!user.isStaff) {
+					return interaction.reply({
+						content: "This command is staff only",
+						ephemeral: true,
+					});
+				}
 			}
-			user.addUsedCommand(1);
+			if (accountRequired) {
+				if (
+					interaction.user.username !== user.username ||
+					interaction.user.discriminator !== user.discriminator
+				) {
+					await user.updateDiscordInformation({
+						username: interaction.user.username,
+						discriminator: interaction.user.discriminator,
+					});
+				}
+				user.addUsedCommand(1);
+			}
 			return execute({
 				interaction: interaction,
 				client: client,
@@ -56,5 +49,6 @@ export const runAuthenticate = async ({
 			});
 		}
 	}
+
 	return execute({ interaction: interaction, client: client });
 };

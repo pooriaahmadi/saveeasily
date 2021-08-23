@@ -42,7 +42,7 @@ export const runAuthenticate = async ({
 			user: user,
 		});
 	} else {
-		if (accountRequired) {
+		if (accountRequired || staffRequired) {
 			return interaction.reply({
 				content: "Please create an account first using /register.",
 				ephemeral: true,

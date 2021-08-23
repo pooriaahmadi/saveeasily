@@ -34,6 +34,7 @@ class Base implements BaseModel {
 			user: this.username,
 			password: this.password,
 			database: this.databaseName,
+			charset: "utf8mb4",
 		});
 		return this;
 	};

@@ -1,5 +1,5 @@
 const testGuild: string = "864457765907988481";
-const debug: boolean = false;
+const debug: boolean = true;
 let clientId: string;
 let databaseConfig: {
 	host: string;

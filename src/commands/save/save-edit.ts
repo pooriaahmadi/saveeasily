@@ -76,8 +76,12 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 		);
 		const embed = new Embed(user).data
 			.setTitle(save.title ? save.title : `Save ${save.id}`)
-			.addField("Content", save.content, true);
-		if (save.media) {
+			.addField(
+				"Content",
+				`${save.content} ${save.media?.endsWith(".mp4") ? save.media : ""}`,
+				true
+			);
+		if (save.media && !save.media.endsWith(".mp4")) {
 			embed.setImage(save.media);
 		}
 		return await interaction.reply({

@@ -30,8 +30,7 @@ fs.readdirSync(path.resolve("./src/context-menus"))
 	});
 
 const rest = new REST({ version: "9" }).setToken(String(process.env.TOKEN));
-
-(async () => {
+const app = async () => {
 	try {
 		console.log(chalk.blue("Started registering commands"));
 		if (args[0] === "dev") {
@@ -52,4 +51,7 @@ const rest = new REST({ version: "9" }).setToken(String(process.env.TOKEN));
 	} catch (error) {
 		console.error(error);
 	}
-})();
+};
+app().then(() => {
+	process.exit(0);
+});

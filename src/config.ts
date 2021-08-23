@@ -1,5 +1,5 @@
 const testGuild: string = "864457765907988481";
-const debug: boolean = true;
+const debug: boolean = false;
 let clientId: string;
 let databaseConfig: {
 	host: string;
@@ -22,7 +22,7 @@ if (debug) {
 	databaseConfig = {
 		host: "localhost",
 		port: 3306,
-		username: "root",
+		username: "remote",
 		password: "Kindertouch123",
 		databaseName: "saveeasily",
 	};

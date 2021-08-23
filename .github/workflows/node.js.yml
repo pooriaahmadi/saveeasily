@@ -32,6 +32,9 @@ jobs:
         run: |
           touch build/.env
           echo TOKEN="${{ secrets.TOKEN }}" >> build/.env
+        run: |
+          touch .env
+          echo TOKEN="${{ secrets.TOKEN }}" >> .env
       - name: Running
         run: npm run register
       - run: pm2 restart saveeasily

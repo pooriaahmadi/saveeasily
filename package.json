@@ -9,7 +9,8 @@
 		"dev": "nodemon",
 		"register-dev": "ts-node src/excludes/register-commands.ts dev",
 		"register": "ts-node src/excludes/register-commands.ts global",
-		"build": "rimraf ./build && npx tsc"
+		"build": "rimraf ./build && npx tsc",
+		"preinstall": "npm i rimraf -g && npm typescript -g"
 	},
 	"author": "",
 	"license": "ISC",

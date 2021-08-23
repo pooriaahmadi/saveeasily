@@ -1,5 +1,5 @@
 import Command from "../../classes/command";
-import { executeInputs } from "../../types";
+import { choiceModel, executeInputs, optionModel } from "../../types";
 import {
 	MessageActionRow,
 	MessageSelectMenu,
@@ -81,7 +81,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 						command.class.options.length
 							? "**Options:** " +
 							  command.class.options
-									.map((item) => {
+									.map((item: optionModel) => {
 										return `\`\`\`Name: ${item.name}\nDescription: ${
 											item.description
 										}\nType: ${item.type}\nRequired? ${
@@ -90,7 +90,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 											item.choices.length
 												? "Choices: " +
 												  item.choices
-														.map((choice) => {
+														.map((choice: choiceModel) => {
 															return `${choice.displayName}`;
 														})
 														.join(", ")

@@ -1,6 +1,6 @@
 import { CommandInteraction, ContextMenuInteraction } from "discord.js";
 import { Connection } from "mysql";
-import Client from "./classes/Client";
+import Client from "./classes/client";
 export interface choiceModel {
 	displayName: string;
 	name: string;

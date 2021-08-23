@@ -1,6 +1,6 @@
 // modules
-import { Intents, WebhookClient } from "discord.js";
-import Client from "./classes/Client";
+import { Guild, Intents, Interaction, WebhookClient } from "discord.js";
+import Client from "./classes/client";
 import Command from "./classes/command";
 import chalk from "chalk";
 import dotenv from "dotenv";
@@ -61,7 +61,7 @@ client.once("ready", () => {
 	setInterval(updateStatus, 60 * 1000);
 });
 
-client.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", async (interaction: Interaction) => {
 	if (!interaction.inGuild()) return;
 	try {
 		if (interaction.isContextMenu()) {
@@ -123,7 +123,7 @@ client.on("interactionCreate", async (interaction) => {
 	return;
 });
 
-client.on("guildCreate", async (guild) => {
+client.on("guildCreate", async (guild: Guild) => {
 	updateStatus();
 	const user = await users.getByDiscordId(guild.ownerId);
 	if (guild.memberCount < 20 && !user?.isVip) {
@@ -143,7 +143,7 @@ client.on("guildCreate", async (guild) => {
 		});
 	}
 });
-client.on("guildDelete", async (guild) => {
+client.on("guildDelete", async (guild: Guild) => {
 	updateStatus();
 
 	new WebhookClient({ url: client.database.guilds }).send({

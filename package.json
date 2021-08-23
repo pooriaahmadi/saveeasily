@@ -10,7 +10,7 @@
 		"register-dev": "ts-node src/excludes/register-commands.ts dev",
 		"register": "ts-node src/excludes/register-commands.ts global",
 		"build": "rimraf ./build && npx tsc",
-		"preinstall": "npm i rimraf -g && npm i typescript -g"
+		"preinstall": "npm ci rimraf -g && npm ci typescript -g"
 	},
 	"author": "Pooria Ahmadi",
 	"license": "ISC",

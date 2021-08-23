@@ -6,16 +6,22 @@ export interface choiceModel {
 	name: string;
 }
 
-export type optionTypes =
-	| "string"
-	| "integer"
-	| "boolean"
-	| "mentionable"
-	| "user"
-	| "channel";
+export enum optionTypes {
+	SUB_COMMAND = 1,
+	SUB_COMMAND_GROUP = 2,
+	STRING = 3,
+	INTEGER = 4,
+	BOOLEAN = 5,
+	USER = 6,
+	CHANNEL = 7,
+	ROLE = 8,
+	MENTIONABLE = 9,
+	NUMBER = 10,
+}
 
 export interface optionInterface {
 	type: optionTypes;
+	options?: optionModel[];
 	name: string;
 	description: string;
 	required: boolean;
@@ -29,10 +35,13 @@ export interface optionChoiceInputs {
 export interface optionModel {
 	type: optionTypes;
 	name: string;
+	options?: optionModel[];
+
 	description: string;
 	required: boolean;
 	choices: Array<choiceModel>;
 	addChoice: ({ displayName, name }: optionChoiceInputs) => optionModel;
+	toJSON: () => { [key: string]: any };
 }
 
 export interface executeInputs {
@@ -224,4 +233,5 @@ export interface CategoryModel {
 	emoji?: string;
 	description?: string;
 	getCommands: (dirName: string) => string[];
+	toJSON: (dirName: string) => any;
 }

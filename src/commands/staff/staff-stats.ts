@@ -3,9 +3,9 @@ import { executeInputs } from "../../types";
 import Embed from "../../classes/embed";
 import si from "systeminformation";
 import Users from "../../databases/users";
-const execute = async ({ interaction, client }: executeInputs) => {
+const execute = async ({ interaction, client, user }: executeInputs) => {
 	await interaction.reply({
-		embeds: [new Embed().data.setTitle("Please wait...")],
+		embeds: [new Embed(user).data.setTitle("Please wait...")],
 	});
 	const data = {
 		cpu: "brand, speedMax, cores",
@@ -13,7 +13,7 @@ const execute = async ({ interaction, client }: executeInputs) => {
 		mem: "total, free",
 	};
 	const systemData = await si.get(data);
-	const embed = new Embed();
+	const embed = new Embed(user);
 	let totalSeconds = (client.uptime || 1) / 1000;
 	let days = Math.floor(totalSeconds / 86400);
 	totalSeconds %= 86400;

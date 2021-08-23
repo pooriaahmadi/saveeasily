@@ -6,12 +6,21 @@ import {
 	SelectMenuInteraction,
 } from "discord.js";
 import Embed from "../../classes/embed";
-const execute = async ({ interaction, client }: executeInputs) => {
-	const defaultEmbed = new Embed().data
+const execute = async ({ interaction, client, user }: executeInputs) => {
+	const defaultEmbed = new Embed(user).data
 		.setTitle(
 			"<:diamond:878301033300910080> Welcome To Help Menu <:diamond:878301033300910080>"
 		)
-		.setDescription("**Please choose one option in the menu below**");
+		.setDescription("**Please choose one option in the menu below**")
+		.addField(
+			`What is ${client.user?.username}?`,
+			`${client.user?.username} is a bot for saving stuff such as \`messages\`, \`link\`, \`texts\` and \`...\`\Basically you can save whatever you want! Even in different ways! Just use **\`/add\`** command OR right click on any message you want to save it **\`Right click on message => apps > save\`**`,
+			true
+		)
+		.addField(
+			"این بات چیست؟",
+			"این بات برای سیو کردن متن ها استفاده می شود، مثل میم و مسیج و عکس و ...، به صورت کلی شما می توانید همه چیز را یا این بات ذخیره کنید! فقط کافیه از کامند ادد یا با کلیک راست کردن روی مسیج و انتخاب گزینه سیو از اَپس."
+		);
 	const selectMenu = new MessageSelectMenu()
 		.setCustomId(`${interaction.id}-all`)
 		.setPlaceholder("Nothing selected")
@@ -49,7 +58,7 @@ const execute = async ({ interaction, client }: executeInputs) => {
 		});
 		row = new MessageActionRow().addComponents(selectMenu);
 		const category = client.categories[key];
-		const embed = new Embed().data.setTitle(
+		const embed = new Embed(user).data.setTitle(
 			`${category.emoji} ${category.name} ${category.emoji}`
 		);
 		Object.keys(client.commands).forEach((item) => {
@@ -63,7 +72,7 @@ const execute = async ({ interaction, client }: executeInputs) => {
 			}
 			if (command.category === key) {
 				embed.addField(
-					item.toLocaleUpperCase(),
+					item.toLocaleUpperCase().replace(/-/g, " "),
 					`${
 						permissionsString
 							? "**Permissions:** " + permissionsString + "\n"
@@ -78,8 +87,9 @@ const execute = async ({ interaction, client }: executeInputs) => {
 										}\nType: ${item.type}\nRequired? ${
 											item.required ? "Yes" : "No"
 										}\n${
-											"Choices: " + item.choices.length
-												? item.choices
+											item.choices.length
+												? "Choices: " +
+												  item.choices
 														.map((choice) => {
 															return `${choice.displayName}`;
 														})

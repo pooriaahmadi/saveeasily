@@ -18,7 +18,29 @@ const execute = async ({
 				ephemeral: true,
 			});
 		}
+		if (message.content.length > 200 && !user?.isVip) {
+			return await interaction.reply({
+				embeds: [
+					new Embed(user).data
+						.setTitle("Not enough juice for your content")
+						.setDescription(
+							"Contents with more that 200 characters needs <:diamond:878301033300910080> **Vip** account, in order for you to add this text, Please use /vip command"
+						),
+				],
+			});
+		}
 		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
+		if (url?.length && !user?.isVip) {
+			return await interaction.reply({
+				embeds: [
+					new Embed(user).data
+						.setTitle("Not enough Juice for MEDIA")
+						.setDescription(
+							"You're not a vip user, So you can't use media option...\n**Check out vip abilities `/vip`**"
+						),
+				],
+			});
+		}
 		const result = await user?.add({
 			content: message.content,
 			media: url?.length ? url[0] : null,
@@ -26,7 +48,7 @@ const execute = async ({
 
 		return await interaction.reply({
 			embeds: [
-				new Embed().data
+				new Embed(user).data
 					.setTitle("Save Added successfully")
 					.setDescription(`View it by **/view type:Id id:${result?.id}**`),
 			],

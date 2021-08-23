@@ -14,7 +14,7 @@ const execute = async ({
 	if (!targetUser) {
 		return await interaction.reply({
 			embeds: [
-				new Embed().data.setTitle(
+				new Embed(user).data.setTitle(
 					`User \`${discordUser.username}#${discordUser.discriminator}\` isn't registered yet.`
 				),
 			],
@@ -29,7 +29,7 @@ const execute = async ({
 	if (targetUser?.isStaff) {
 		permissionsString += "<:emerald:878301034227826688> **`Staff`**";
 	}
-	const embed = new Embed().data
+	const embed = new Embed(targetUser).data
 		.setTitle(`${targetUser?.username}#${targetUser?.discriminator} Profile`)
 		.addField("Discord id", "**`" + targetUser?.discordId + "`**", true)
 		.addField("Id", "**`" + targetUser?.id + "`**", true)

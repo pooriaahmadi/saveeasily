@@ -1,5 +1,5 @@
 // modules
-import { Intents } from "discord.js";
+import { Intents, WebhookClient } from "discord.js";
 import Client from "./classes/Client";
 import Command from "./classes/command";
 import chalk from "chalk";
@@ -7,9 +7,10 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { CategoryModel, contextMenuModel } from "./types";
-import { commands, errors, guilds, logs } from "./database.json";
+import channels from "./database.json";
 
 import Embed from "./classes/embed";
+import users from "./databases/users";
 // actual app
 dotenv.config();
 declare module "discord.js" {
@@ -21,10 +22,7 @@ declare module "discord.js" {
 const client = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_PRESENCES],
 });
-client.database["commands"] = commands;
-client.database["errors"] = errors;
-client.database["logs"] = logs;
-client.database["guilds"] = guilds;
+client.database = channels;
 console.log(chalk.yellow("=-=-=-= Slash Commands =-=-=-="));
 fs.readdirSync(path.join(__dirname, "commands")).forEach((dir) => {
 	const category: CategoryModel = require(path.join(
@@ -64,6 +62,7 @@ client.once("ready", () => {
 });
 
 client.on("interactionCreate", async (interaction) => {
+	if (!interaction.inGuild()) return;
 	try {
 		if (interaction.isContextMenu()) {
 			const contextMenu: any = client.contextMenus[interaction.commandName];
@@ -71,20 +70,42 @@ client.on("interactionCreate", async (interaction) => {
 			await contextMenu.run({ interaction, client });
 		}
 		if (interaction.isCommand()) {
-			const command = client.commands[interaction.commandName].class;
+			let command;
+			let subCommands = "";
+			try {
+				subCommands = interaction.options.getSubcommand();
+				command =
+					client.commands[`${interaction.commandName}-${subCommands}`].class;
+			} catch (error) {
+				subCommands = "";
+				command = client.commands[interaction.commandName].class;
+			}
 			if (!command) return;
-			await client.channels.cache
-				.get(client.database.commands)
-				?.send(
-					`${interaction.user.username}#${interaction.user.discriminator} (${interaction.user.id}) runned **\`${interaction.commandName}\`**`
-				);
+			new WebhookClient({
+				url: client.database.commands,
+			}).send({
+				embeds: [
+					new Embed().data
+						.addField(
+							"User",
+							`${interaction.user.username}#${interaction.user.discriminator}`,
+							true
+						)
+						.addField("ID", interaction.user.id, true)
+						.addField(
+							"Server",
+							`${interaction.guildId} | ${interaction.guild?.name}`,
+							true
+						)
+						.addField("Channel", `${interaction.channelId}`, true)
+						.addField("Command", `${interaction.commandName} ${subCommands}`),
+				],
+			});
 			await command.run({ interaction: interaction, client: client });
 		}
 	} catch (error) {
 		console.error(error);
-		await client.channels.cache
-			.get(client.database.errors)
-			?.send(String(error));
+		new WebhookClient({ url: client.database.errors }).send(String(error));
 		if (interaction.isContextMenu() || interaction.isCommand()) {
 			if (interaction.replied) {
 				await interaction.editReply({
@@ -104,13 +125,14 @@ client.on("interactionCreate", async (interaction) => {
 
 client.on("guildCreate", async (guild) => {
 	updateStatus();
-	if (guild.memberCount < 20) {
+	const user = await users.getByDiscordId(guild.ownerId);
+	if (guild.memberCount < 20 && !user?.isVip) {
 		await guild.leave();
-		await client.channels.cache.get(client.database.logs)?.send({
+		new WebhookClient({ url: client.database.guilds }).send({
 			content: `I left ${guild.name} because it has less member than 20`,
 		});
 	} else {
-		await client.channels.cache.get(client.database.guilds)?.send({
+		new WebhookClient({ url: client.database.guilds }).send({
 			embeds: [
 				new Embed().data
 					.setTitle("New Server!")
@@ -124,7 +146,7 @@ client.on("guildCreate", async (guild) => {
 client.on("guildDelete", async (guild) => {
 	updateStatus();
 
-	await client.channels.cache.get(guilds)?.send({
+	new WebhookClient({ url: client.database.guilds }).send({
 		embeds: [
 			new Embed().data
 				.setTitle("Leaved a server!")

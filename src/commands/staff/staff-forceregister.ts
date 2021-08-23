@@ -1,25 +1,23 @@
 import Command from "../../classes/command";
-import { executeInputs } from "../../types";
+import { executeInputs, optionTypes } from "../../types";
 import Option from "../../classes/option";
 import Users from "../../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
 	const user = interaction.options.getUser("user", true);
 	const databaseUser = await Users.getByDiscordId(user.id);
 	if (databaseUser) {
-		if (databaseUser.isStaff) {
-			await databaseUser.demote();
-			return await interaction.reply({
-				content: `${user.username}#${user.discriminator} has been demoted`,
-			});
-		} else {
-			await databaseUser.makeStaff();
-			return await interaction.reply({
-				content: `${user.username}#${user.discriminator} is now one of ${client.user?.username} staff user SHEEEESH`,
-			});
-		}
-	} else {
 		return await interaction.reply({
-			content: `${user.username}#${user.discriminator} isn't registered yet.`,
+			content: `${user.username}#${user.discriminator} is already registered!`,
+			ephemeral: true,
+		});
+	} else {
+		const result = await Users.create({
+			discordId: user.id,
+			discriminator: user.discriminator,
+			username: user.username,
+		});
+		return await interaction.reply({
+			content: `${result.username}#${result.discriminator} has been registered with id ${user.id}!`,
 			ephemeral: true,
 		});
 	}
@@ -28,10 +26,10 @@ const execute = async ({ interaction, client }: executeInputs) => {
 export default new Command({
 	staffRequired: true,
 	execute: execute,
-	description: "Staff toggle command",
+	description: "Force registering target user",
 	options: [
 		new Option({
-			type: "user",
+			type: optionTypes.USER,
 			name: "user",
 			description: "Target User",
 			required: true,

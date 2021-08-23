@@ -1,5 +1,5 @@
 import Command from "../../classes/command";
-import { executeInputs, userModel } from "../../types";
+import { executeInputs, optionTypes, userModel } from "../../types";
 import Embed from "../../classes/embed";
 import Option from "../../classes/option";
 import Users from "../../databases/users";
@@ -27,7 +27,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 	if (finalUser?.isStaff) {
 		permissionsString += "<:emerald:878301034227826688> **`Staff`**";
 	}
-	const embed = new Embed().data
+	const embed = new Embed(finalUser).data
 		.setTitle(`${finalUser?.username}#${finalUser?.discriminator} Profile`)
 		.addField("Discord id", "**`" + finalUser?.discordId + "`**", true)
 		.addField("Id", "**`" + finalUser?.id + "`**", true)
@@ -55,7 +55,7 @@ export default new Command({
 	description: "Your profile in Save Easily",
 	options: [
 		new Option({
-			type: "user",
+			type: optionTypes.USER,
 			description: "Target user to view profile",
 			name: "user",
 			required: false,

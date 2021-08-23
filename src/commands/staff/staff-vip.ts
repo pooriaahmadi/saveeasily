@@ -1,5 +1,5 @@
 import Command from "../../classes/command";
-import { executeInputs } from "../../types";
+import { executeInputs, optionTypes } from "../../types";
 import Option from "../../classes/option";
 import Users from "../../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
@@ -31,7 +31,7 @@ export default new Command({
 	description: "Vip toggle command",
 	options: [
 		new Option({
-			type: "user",
+			type: optionTypes.USER,
 			name: "user",
 			description: "Target User",
 			required: true,

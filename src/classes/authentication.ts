@@ -14,41 +14,40 @@ export const runAuthenticate = async ({
 	client: Client;
 	execute: any;
 }) => {
-	if (staffRequired || accountRequired) {
-		const user = await Users.getByDiscordId(interaction.member?.user.id);
-		if (user) {
-			if (staffRequired) {
-				if (!user.isStaff) {
-					return interaction.reply({
-						content: "This command is staff only",
-						ephemeral: true,
-					});
-				}
+	const user = await Users.getByDiscordId(interaction.member?.user.id);
+	if (user) {
+		user.addUsedCommand(1);
+		if (staffRequired) {
+			if (!user.isStaff) {
+				return interaction.reply({
+					content: "This command is staff only",
+					ephemeral: true,
+				});
 			}
-			if (accountRequired) {
-				if (
-					interaction.user.username !== user.username ||
-					interaction.user.discriminator !== user.discriminator
-				) {
-					await user.updateDiscordInformation({
-						username: interaction.user.username,
-						discriminator: interaction.user.discriminator,
-					});
-				}
-				user.addUsedCommand(1);
+		}
+		if (accountRequired) {
+			if (
+				interaction.user.username !== user.username ||
+				interaction.user.discriminator !== user.discriminator
+			) {
+				await user.updateDiscordInformation({
+					username: interaction.user.username,
+					discriminator: interaction.user.discriminator,
+				});
 			}
-			return execute({
-				interaction: interaction,
-				client: client,
-				user: user,
-			});
-		} else {
+		}
+		return execute({
+			interaction: interaction,
+			client: client,
+			user: user,
+		});
+	} else {
+		if (accountRequired) {
 			return interaction.reply({
 				content: "Please create an account first using /register.",
 				ephemeral: true,
 			});
 		}
+		return execute({ interaction: interaction, client: client });
 	}
-
-	return execute({ interaction: interaction, client: client });
 };

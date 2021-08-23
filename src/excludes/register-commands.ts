@@ -14,14 +14,7 @@ fs.readdirSync(path.resolve("./src/commands")).forEach((dir) => {
 	const category: CategoryModel = require(path.resolve(
 		`./src/commands/${dir}`
 	)).default;
-	category.getCommands(dir).forEach((file) => {
-		const command: Command = require(path.resolve(
-			`./src/commands/${dir}/${file}`
-		)).default;
-
-		console.log(chalk.cyanBright(`Loaded Command ${file}`));
-		commands.push(command.toJSON(file.replace(".js", "").replace(".ts", "")));
-	});
+	commands.push(...category.toJSON(dir));
 });
 
 const contextMenus: { [key: string]: string | number }[] = [];

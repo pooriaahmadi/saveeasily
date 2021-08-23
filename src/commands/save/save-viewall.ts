@@ -14,9 +14,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 				.addOptions(
 					saves?.map((item, index) => {
 						return {
-							label: `#${index + 1}: ${
-								item.title ? item.title : `Save id ${item.id}`
-							}`,
+							label: `ID ${item.id}${item.title ? `: ${item.title}` : ""}`,
 							value: String(index),
 						};
 					}) || []
@@ -24,7 +22,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 		);
 		const sendMessage = async (id: number = 0) => {
 			const save = saves[id];
-			const embed = new Embed().data
+			const embed = new Embed(user).data
 				.setTitle(save.title ? save.title : `Save ${save.id}`)
 				.addField("Content", save.content, true);
 			if (save.media) {
@@ -39,6 +37,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 			await interaction.reply({
 				components: [row],
 				embeds: [embed],
+				ephemeral: true,
 			});
 		};
 		await sendMessage();
@@ -62,8 +61,8 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 	} else {
 		return interaction.reply({
 			embeds: [
-				new Embed().data.setTitle(
-					"You don't have any saves... add one using /add"
+				new Embed(user).data.setTitle(
+					"You don't have any saves... add one using /save add"
 				),
 			],
 		});

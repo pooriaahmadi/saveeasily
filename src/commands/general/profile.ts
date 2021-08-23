@@ -5,18 +5,18 @@ import Option from "../../classes/option";
 import Users from "../../databases/users";
 
 const execute = async ({ interaction, client, user }: executeInputs) => {
+	await interaction.deferReply();
 	const mentionedUser = interaction.options.getUser("user", false);
 	let finalUser: userModel | undefined = user;
 	if (mentionedUser) {
 		finalUser = await Users.getByDiscordId(mentionedUser.id);
 		if (!finalUser) {
-			return await interaction.reply({
+			return await interaction.editReply({
 				embeds: [
 					new Embed().data.setTitle(
 						`${mentionedUser.username} isn't registered yet.`
 					),
 				],
-				ephemeral: true,
 			});
 		}
 	}
@@ -44,7 +44,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 				mentionedUser ? mentionedUser.avatarURL() : interaction.user.avatarURL()
 			)
 		);
-	return await interaction.reply({
+	return await interaction.editReply({
 		embeds: [embed],
 	});
 };

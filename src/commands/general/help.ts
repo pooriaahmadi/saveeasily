@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import Embed from "../../classes/embed";
 const execute = async ({ interaction, client, user }: executeInputs) => {
+	await interaction.deferReply();
 	const defaultEmbed = new Embed(user).data
 		.setTitle(
 			"<:diamond:878301033300910080> Welcome To Help Menu <:diamond:878301033300910080>"
@@ -38,13 +39,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 	let row = new MessageActionRow().addComponents(selectMenu);
 	const sendMessage = async (key?: string) => {
 		if (!key) {
-			if (interaction.replied) {
-				return await interaction.editReply({
-					embeds: [defaultEmbed],
-					components: [row],
-				});
-			}
-			return await interaction.reply({
+			return await interaction.editReply({
 				embeds: [defaultEmbed],
 				components: [row],
 			});

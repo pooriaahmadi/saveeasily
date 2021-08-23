@@ -208,7 +208,7 @@ export interface contextMenuInputs {
 		interaction,
 		user,
 		client,
-	}: executeInputsContextMenu) => Promise<void>;
+	}: executeInputsContextMenu) => Promise<any>;
 }
 export interface contextMenuModel {
 	staffRequired?: boolean;
@@ -219,7 +219,7 @@ export interface contextMenuModel {
 		interaction,
 		user,
 		client,
-	}: executeInputsContextMenu) => Promise<void>;
+	}: executeInputsContextMenu) => Promise<any>;
 	run: ({ interaction, client }: executeInputsContextMenu) => Promise<void>;
 	toJSON: () => { [key: string]: string | number };
 }

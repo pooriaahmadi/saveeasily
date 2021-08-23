@@ -4,6 +4,7 @@ import Embed from "../../classes/embed";
 import Option from "../../classes/option";
 const execute = async ({ interaction, client, user }: executeInputs) => {
 	const id = interaction.options.getInteger("id", true);
+	const ephemeral = interaction.options.getBoolean("ephemeral");
 	const save = await user?.getSave(id);
 	if (save) {
 		const embed = new Embed(user).data
@@ -19,6 +20,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 		}
 		await interaction.reply({
 			embeds: [embed],
+			ephemeral: ephemeral ? true : false,
 		});
 	} else {
 		await interaction.reply({
@@ -44,6 +46,12 @@ export default new Command({
 			description: "Id of your save",
 			name: "id",
 			required: true,
+		}),
+		new Option({
+			description: "Show the embed in public?",
+			type: optionTypes.BOOLEAN,
+			name: "ephemeral",
+			required: false,
 		}),
 	],
 });

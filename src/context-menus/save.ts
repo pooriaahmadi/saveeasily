@@ -6,20 +6,22 @@ const execute = async ({
 	client,
 	user,
 }: executeInputsContextMenu) => {
+	await interaction.deferReply({
+		ephemeral: true,
+	});
 	const message = await interaction.channel?.messages.fetch(
 		interaction.targetId
 	);
 
 	if (message) {
 		if (!message.content) {
-			return await interaction.reply({
+			return await interaction.editReply({
 				content:
 					"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",
-				ephemeral: true,
 			});
 		}
 		if (message.content.length > 200 && !user?.isVip) {
-			return await interaction.reply({
+			return await interaction.editReply({
 				embeds: [
 					new Embed(user).data
 						.setTitle("Not enough juice for your content")
@@ -31,7 +33,7 @@ const execute = async ({
 		}
 		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
 		if (url?.length && !user?.isVip) {
-			return await interaction.reply({
+			return await interaction.editReply({
 				embeds: [
 					new Embed(user).data
 						.setTitle("Not enough Juice for MEDIA")
@@ -46,13 +48,12 @@ const execute = async ({
 			media: url?.length ? url[0] : null,
 		});
 
-		return await interaction.reply({
+		return await interaction.editReply({
 			embeds: [
 				new Embed(user).data
 					.setTitle("Save Added successfully")
 					.setDescription(`View it by **/view type:Id id:${result?.id}**`),
 			],
-			ephemeral: true,
 		});
 	}
 };

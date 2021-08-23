@@ -12,7 +12,7 @@
 		"build": "rimraf ./build && npx tsc",
 		"preinstall": "npm i rimraf -g && npm typescript -g"
 	},
-	"author": "",
+	"author": "Pooria Ahmadi",
 	"license": "ISC",
 	"dependencies": {
 		"@discordjs/rest": "0.1.0-canary.0",

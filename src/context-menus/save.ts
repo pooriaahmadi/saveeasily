@@ -6,52 +6,59 @@ const execute = async ({
 	client,
 	user,
 }: executeInputsContextMenu) => {
-	await interaction.deferReply({
-		ephemeral: true,
-	});
 	const message = interaction.options.getMessage("message", true);
-
-	if (!message.content) {
-		return await interaction.editReply({
-			content:
-				"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",
+	if (message) {
+		if (!message.content) {
+			return await interaction.reply({
+				content:
+					"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",
+				ephemeral: true,
+			});
+		}
+		if (message.content.length > 200 && !user?.isVip) {
+			return await interaction.reply({
+				embeds: [
+					new Embed(user).data
+						.setTitle("Not enough juice for your content")
+						.setDescription(
+							"Contents with more that 200 characters needs <:diamond:878301033300910080> **Vip** account, in order for you to add this text, Please use /vip command"
+						),
+				],
+				ephemeral: true,
+			});
+		}
+		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
+		if (url?.length && !user?.isVip) {
+			return await interaction.reply({
+				embeds: [
+					new Embed(user).data
+						.setTitle("Not enough Juice for MEDIA")
+						.setDescription(
+							"You're not a vip user, So you can't use media option...\n**Check out vip abilities `/vip`**"
+						),
+				],
+				ephemeral: true,
+			});
+		}
+		const result = await user?.add({
+			content: message.content,
+			media: url?.length ? url[0] : null,
 		});
-	}
-	if (message.content.length > 200 && !user?.isVip) {
-		return await interaction.editReply({
+
+		return await interaction.reply({
 			embeds: [
 				new Embed(user).data
-					.setTitle("Not enough juice for your content")
-					.setDescription(
-						"Contents with more that 200 characters needs <:diamond:878301033300910080> **Vip** account, in order for you to add this text, Please use /vip command"
-					),
+					.setTitle("Save Added successfully")
+					.setDescription(`View it by **/view type:Id id:${result?.id}**`),
 			],
+			ephemeral: true,
+		});
+	} else {
+		await interaction.reply({
+			content: "There's no message...",
+			ephemeral: true,
 		});
 	}
-	const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
-	if (url?.length && !user?.isVip) {
-		return await interaction.editReply({
-			embeds: [
-				new Embed(user).data
-					.setTitle("Not enough Juice for MEDIA")
-					.setDescription(
-						"You're not a vip user, So you can't use media option...\n**Check out vip abilities `/vip`**"
-					),
-			],
-		});
-	}
-	const result = await user?.add({
-		content: message.content,
-		media: url?.length ? url[0] : null,
-	});
-
-	return await interaction.editReply({
-		embeds: [
-			new Embed(user).data
-				.setTitle("Save Added successfully")
-				.setDescription(`View it by **/view type:Id id:${result?.id}**`),
-		],
-	});
 };
 export default new ContextMenu({
 	accountRequired: true,

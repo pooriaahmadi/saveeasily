@@ -9,9 +9,11 @@ const execute = async ({
 	await interaction.deferReply({
 		ephemeral: true,
 	});
-	const message = await interaction.channel?.messages.fetch(
-		interaction.targetId
-	);
+	let message;
+	if (interaction.channel) {
+		message = await interaction.channel?.messages.fetch(interaction.targetId);
+	} else {
+	}
 
 	if (message) {
 		if (!message.content) {

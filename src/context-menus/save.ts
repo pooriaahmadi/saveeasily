@@ -1,14 +1,19 @@
 import ContextMenu from "../classes/contextMenu";
 import { executeInputsContextMenu, contextMenuType } from "../types";
 import Embed from "../classes/embed";
+import { MessageAttachment } from "discord.js";
 const execute = async ({
 	interaction,
 	client,
 	user,
 }: executeInputsContextMenu) => {
 	const message = interaction.options.getMessage("message", true);
+	const attachments: any[] = [];
+	message.attachments.forEach((item: any) => {
+		attachments.push(item);
+	});
 	if (message) {
-		if (!message.content && message.embeds.length) {
+		if (!message.content && !attachments.length) {
 			return await interaction.reply({
 				content:
 					"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",
@@ -28,7 +33,7 @@ const execute = async ({
 			});
 		}
 		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
-		if (url?.length && !user?.isVip) {
+		if ((url?.length || attachments.length) && !user?.isVip) {
 			return await interaction.reply({
 				embeds: [
 					new Embed(user).data
@@ -42,7 +47,11 @@ const execute = async ({
 		}
 		const result = await user?.add({
 			content: message.content,
-			media: url?.length ? url[0] : null,
+			media: attachments.length
+				? attachments[0].url
+				: url?.length
+				? url[0]
+				: "",
 		});
 
 		return await interaction.reply({

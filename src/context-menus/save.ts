@@ -8,7 +8,7 @@ const execute = async ({
 }: executeInputsContextMenu) => {
 	const message = interaction.options.getMessage("message", true);
 	if (message) {
-		if (!message.content) {
+		if (!message.content && message.embeds.length) {
 			return await interaction.reply({
 				content:
 					"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",

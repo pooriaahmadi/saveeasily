@@ -63,6 +63,9 @@ client.once("ready", () => {
 	console.log(chalk.greenBright(`Logged in as ${client.user?.username}`));
 	updateStatus();
 	setInterval(updateStatus, 60 * 1000);
+	new WebhookClient({ url: client.database.logs }).send({
+		content: `${client.user?.username} is now ready!`,
+	});
 });
 
 client.on("interactionCreate", async (interaction: Interaction) => {

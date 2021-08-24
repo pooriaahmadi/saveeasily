@@ -7,10 +7,10 @@ const execute = async ({
 	user,
 }: executeInputsContextMenu) => {
 	const message = interaction.options.getMessage("message", true);
-	console.log(message.content);
-	console.log(message);
+	//@ts-ignore
+	const attachments = Array.from(message.attachments.values());
 	if (message) {
-		if (!message.content) {
+		if (!message.content && attachments.length) {
 			return await interaction.reply({
 				content:
 					"Empty Content? Means that there's only embeds in there? So there's nothing to save and BYE",
@@ -30,7 +30,7 @@ const execute = async ({
 			});
 		}
 		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
-		if (url?.length && !user?.isVip) {
+		if ((url?.length || attachments.length) && !user?.isVip) {
 			return await interaction.reply({
 				embeds: [
 					new Embed(user).data
@@ -44,7 +44,11 @@ const execute = async ({
 		}
 		const result = await user?.add({
 			content: message.content,
-			media: url?.length ? url[0] : null,
+			media: attachments.length
+				? attachments[0].url
+				: url?.length
+				? url[0]
+				: null,
 		});
 
 		return await interaction.reply({

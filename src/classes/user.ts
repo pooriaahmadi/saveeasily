@@ -98,10 +98,9 @@ class User implements userModel {
 		const result: any = await Main.createQuery(
 			`INSERT INTO saves (id, user, title, content, media) VALUES (NULL, ${
 				this.id
-			}, ${title ? `'${title.replace(/'/g, "")}'` : "NULL"}, '${content.replace(
-				/'/g,
-				""
-			)}', ${media ? `'${media}'` : "NULL"})`
+			}, ${
+				title ? `'${title.replace(/'/g, '"')}'` : "NULL"
+			}, '${content.replace(/'/g, '"')}', ${media ? `'${media}'` : "NULL"})`
 		);
 		return new Save({
 			id: result.insertId,

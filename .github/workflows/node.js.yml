@@ -12,24 +12,21 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    strategy:
-      matrix:
-        node: ["16"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: "16"
           cache: "npm"
-      - run: npm ci && npm run preinstall
-      - run: npm run build --if-present
+      - run: sudo npm ci && sudo npm run preinstall
+      - run: sudo npm run build --if-present
       - name: Create env file
         run: |
-          touch build/.env
-          echo TOKEN="${{ secrets.TOKEN }}" >> build/.env
+          sudo touch build/.env
+          sudo echo TOKEN="${{ secrets.TOKEN }}" >> build/.env
       - run: |
-          touch .env
-          echo TOKEN="${{ secrets.TOKEN }}" >> .env
+          sudo touch .env
+          sudo echo TOKEN="${{ secrets.TOKEN }}" >> .env
       - name: Running
-        run: npm run register
-      - run: pm2 restart saveeasily
+        run: sudo npm run register
+      - run: sudo pm2 restart saveeasily

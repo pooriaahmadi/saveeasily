@@ -6,6 +6,9 @@ import {
 } from "../types";
 import Main from "../databases/main";
 import Save from "./save";
+const mariaDBDate = (date: Date) => {
+	return `${date.getUTCFullYear()}-${date.getMonth()}-${date.getDate()}`;
+};
 class User implements userModel {
 	id;
 	discordId;
@@ -32,13 +35,13 @@ class User implements userModel {
 		this.vip = vip;
 	}
 	makeVip = async (endDate: Date) => {
-		const currentDate = new Date().toISOString();
+		const currentDate = new Date();
 		if (this.vip) {
 			try {
 				await Main.createQuery(
-					`UPDATE vip set start='${currentDate}', end='${endDate.toISOString()}' WHERE user=${
-						this.id
-					}`
+					`UPDATE vip set start='${mariaDBDate(
+						currentDate
+					)}', end='${mariaDBDate(endDate)}' WHERE user=${this.id}`
 				);
 			} catch (error) {
 				throw error;
@@ -47,7 +50,7 @@ class User implements userModel {
 		await Main.createQuery(
 			`INSERT INTO vip(id, user, start, end) VALUES (NULL, ${
 				this.id
-			}, '${currentDate}', '${endDate.toISOString()}')`
+			}, '${mariaDBDate(currentDate)}', '${mariaDBDate(endDate)}')`
 		);
 		return true;
 	};

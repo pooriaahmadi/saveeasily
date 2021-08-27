@@ -20,7 +20,7 @@ if (debug) {
 } else {
 	clientId = "879048523801317386";
 	databaseConfig = {
-		host: "localhost",
+		host: "192.168.1.50",
 		port: 3306,
 		username: "remote",
 		password: "Kindertouch123",

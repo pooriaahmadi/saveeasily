@@ -111,7 +111,7 @@ export interface userModelInputs {
 	discriminator: string | undefined;
 	usedCommands: number;
 	isStaff: boolean;
-	isVip: boolean;
+	vip: VipModel | null;
 }
 export interface discordInformation {
 	username: string;
@@ -131,8 +131,8 @@ export interface userModel {
 	discriminator: string | undefined;
 	usedCommands: number;
 	isStaff: boolean;
-	isVip: boolean;
-	makeVip: () => Promise<boolean>;
+	vip: VipModel | null;
+	makeVip: (endDate: Date) => Promise<boolean>;
 	makeNormal: () => Promise<boolean>;
 	makeStaff: () => Promise<boolean>;
 	demote: () => Promise<boolean>;
@@ -234,4 +234,16 @@ export interface CategoryModel {
 	description?: string;
 	getCommands: (dirName: string) => string[];
 	toJSON: (dirName: string) => any;
+}
+
+export interface VipInputs {
+	id: number;
+	start: Date;
+	end: Date;
+}
+export interface VipModel {
+	id: number;
+	start: Date;
+	end: Date;
+	isExpired: () => boolean;
 }

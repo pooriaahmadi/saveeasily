@@ -23,7 +23,7 @@ const execute = async ({
 	}
 
 	let permissionsString: string = "";
-	if (targetUser?.isVip) {
+	if (targetUser?.vip) {
 		permissionsString += "<:diamond:878301033300910080> **`Vip`**\n";
 	}
 	if (targetUser?.isStaff) {
@@ -41,8 +41,16 @@ const execute = async ({
 		.addField("Permissions", permissionsString || "No permissions", true)
 		.addField("Used Commands", "**`" + targetUser?.usedCommands + "`**", true)
 		.addField("Saves", "**`" + (await targetUser?.savesCount()) + "`**", true)
-
 		.setThumbnail(String(discordUser.avatarURL()));
+	if (targetUser?.vip) {
+		embed.addField(
+			"Vip",
+			`Started on: **<t:${
+				targetUser.vip.start.getTime() / 1000
+			}:d>**\nExpiration: **<t:${targetUser.vip.end.getTime() / 1000}:d>**`,
+			true
+		);
+	}
 	return await interaction.reply({
 		embeds: [embed],
 	});

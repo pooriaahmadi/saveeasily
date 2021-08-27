@@ -16,7 +16,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 			save.title = title;
 		}
 		if (content) {
-			if (content.length > 200 && !user?.isVip) {
+			if (content.length > 200 && !user?.vip) {
 				return await interaction.reply({
 					embeds: [
 						new Embed(user).data
@@ -31,7 +31,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 			save.content = content;
 		}
 		if (media) {
-			if (!user?.isVip) {
+			if (!user?.vip) {
 				return await interaction.reply({
 					embeds: [
 						new Embed(user).data

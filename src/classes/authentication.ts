@@ -17,6 +17,10 @@ export const runAuthenticate = async ({
 	const user = await Users.getByDiscordId(interaction.member?.user.id);
 	if (user) {
 		user.addUsedCommand(1);
+		if (user.vip && user.vip.isExpired()) {
+			await user.makeNormal();
+			user.vip = null;
+		}
 		if (staffRequired) {
 			if (!user.isStaff) {
 				return interaction.reply({

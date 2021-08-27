@@ -13,7 +13,7 @@ class User implements userModel {
 	discriminator;
 	usedCommands;
 	isStaff;
-	isVip;
+	vip;
 	constructor({
 		id,
 		discordId,
@@ -21,7 +21,7 @@ class User implements userModel {
 		discriminator,
 		usedCommands,
 		isStaff,
-		isVip,
+		vip,
 	}: userModelInputs) {
 		this.id = id;
 		this.discordId = discordId;
@@ -29,29 +29,37 @@ class User implements userModel {
 		this.discriminator = discriminator;
 		this.usedCommands = usedCommands;
 		this.isStaff = isStaff;
-		this.isVip = isVip;
+		this.vip = vip;
 	}
-	makeVip = async () => {
-		if (!this.isVip) {
+	makeVip = async (endDate: Date) => {
+		const currentDate = new Date().toISOString();
+		if (this.vip) {
 			try {
-				await Main.createQuery(`UPDATE users set is_vip=1 WHERE id=${this.id}`);
-				return true;
+				await Main.createQuery(
+					`UPDATE vip set start='${currentDate}', end='${endDate.toISOString()}' WHERE user=${
+						this.id
+					}`
+				);
 			} catch (error) {
 				throw error;
 			}
 		}
-		return false;
+		await Main.createQuery(
+			`INSERT INTO vip(id, user, start, end) VALUES (NULL, ${
+				this.id
+			}, '${currentDate}', '${endDate.toISOString()}')`
+		);
+		return true;
 	};
 	makeNormal = async () => {
-		if (this.isVip) {
+		if (this.vip) {
 			try {
-				await Main.createQuery(`UPDATE users set is_vip=0 WHERE id=${this.id}`);
-				return true;
+				await Main.createQuery(`DELETE FROM vip where user=${this.id}`);
 			} catch (error) {
 				throw error;
 			}
 		}
-		return false;
+		return true;
 	};
 	makeStaff = async () => {
 		if (!this.isStaff) {

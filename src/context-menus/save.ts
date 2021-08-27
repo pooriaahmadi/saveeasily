@@ -17,7 +17,7 @@ const execute = async ({
 				ephemeral: true,
 			});
 		}
-		if (message.content.length > 200 && !user?.isVip) {
+		if (message.content.length > 200 && !user?.vip) {
 			return await interaction.reply({
 				embeds: [
 					new Embed(user).data
@@ -30,7 +30,7 @@ const execute = async ({
 			});
 		}
 		const url = message.content.match(/\bhttp[s]?:\/\/\S+/gi);
-		if ((url?.length || attachments.length) && !user?.isVip) {
+		if ((url?.length || attachments.length) && !user?.vip) {
 			return await interaction.reply({
 				embeds: [
 					new Embed(user).data

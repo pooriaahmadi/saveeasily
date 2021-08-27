@@ -4,17 +4,26 @@ import Option from "../../classes/option";
 import Users from "../../databases/users";
 const execute = async ({ interaction, client }: executeInputs) => {
 	const user = interaction.options.getUser("user", true);
+	const days = interaction.options.getInteger("days", true);
+	const months = interaction.options.getInteger("months", true);
 	const databaseUser = await Users.getByDiscordId(user.id);
 	if (databaseUser) {
-		if (databaseUser.isVip) {
+		if (databaseUser.vip && !databaseUser.vip.isExpired()) {
 			await databaseUser.makeNormal();
 			return await interaction.reply({
 				content: `${user.username}#${user.discriminator} is now a normal user`,
 			});
 		} else {
-			await databaseUser.makeVip();
+			const currentDate = new Date();
+			currentDate.setMonth(currentDate.getMonth() + months);
+			currentDate.setDate(currentDate.getDate() + days);
+			await databaseUser.makeVip(currentDate);
 			return await interaction.reply({
-				content: `${user.username}#${user.discriminator} is now a VIP user SHEEEESH`,
+				content: `${user.username}#${
+					user.discriminator
+				} is now a VIP user SHEEEESH\nUntil: **<t:${
+					currentDate.getTime() / 1000
+				}:d>**`,
 			});
 		}
 	} else {
@@ -34,6 +43,18 @@ export default new Command({
 			type: optionTypes.USER,
 			name: "user",
 			description: "Target User",
+			required: true,
+		}),
+		new Option({
+			type: optionTypes.INTEGER,
+			name: "days",
+			description: "Extra days",
+			required: true,
+		}),
+		new Option({
+			type: optionTypes.INTEGER,
+			name: "months",
+			description: "Extra months",
 			required: true,
 		}),
 	],

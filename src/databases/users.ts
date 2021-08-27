@@ -1,10 +1,13 @@
 import Main from "./main";
 import User from "../classes/user";
 import { usersModel, usersModelInput } from "../types";
+import Vip from "../classes/vip";
 class Users implements usersModel {
 	constructor() {}
 	all = async () => {
-		const users: any = await Main.createQuery("SELECT * FROM users");
+		const users: any = await Main.createQuery(
+			"SELECT users.id, users.discord_id, users.username, users.discriminator, users.used_commands, users.is_staff,vip.id as vip_id, vip.start, vip.end FROM users LEFT JOIN vip on vip.user=users.id"
+		);
 		users.forEach((item: { [key: string]: any }, index: number) => {
 			users[index] = new User({
 				id: item.id,
@@ -13,14 +16,21 @@ class Users implements usersModel {
 				discriminator: item.discriminator,
 				usedCommands: item.used_commands,
 				isStaff: item.is_staff,
-				isVip: item.is_vip,
+				vip:
+					"vip_id" in item
+						? new Vip({
+								id: item.vip_id,
+								start: item.start,
+								end: item.end,
+						  })
+						: null,
 			});
 		});
 		return users;
 	};
 	getById = async (id: number) => {
 		let user: any = await Main.createQuery(
-			`SELECT * FROM users WHERE id=${id}`
+			`SELECT users.id, users.discord_id, users.username, users.discriminator, users.used_commands, users.is_staff,vip.id as vip_id, vip.start, vip.end FROM users LEFT JOIN vip on vip.user=users.id WHERE users.id=${id}`
 		);
 		if (user.length) {
 			user = user[0];
@@ -31,13 +41,20 @@ class Users implements usersModel {
 				discriminator: user.discriminator,
 				usedCommands: user.used_commands,
 				isStaff: user.is_staff,
-				isVip: user.is_vip,
+				vip:
+					"vip_id" in user
+						? new Vip({
+								id: user.vip_id,
+								start: user.start,
+								end: user.end,
+						  })
+						: null,
 			});
 		}
 	};
 	getByDiscordId = async (id: string | undefined) => {
 		let user: any = await Main.createQuery(
-			`SELECT * FROM users WHERE discord_id='${id}'`
+			`SELECT users.id, users.discord_id, users.username, users.discriminator, users.used_commands, users.is_staff,vip.id as vip_id, vip.start, vip.end FROM users LEFT JOIN vip on vip.user=users.id WHERE discord_id=${id}`
 		);
 		if (user.length) {
 			user = user[0];
@@ -48,13 +65,20 @@ class Users implements usersModel {
 				discriminator: user.discriminator,
 				usedCommands: user.used_commands,
 				isStaff: user.is_staff,
-				isVip: user.is_vip,
+				vip:
+					"vip_id" in user
+						? new Vip({
+								id: user.vip_id,
+								start: user.start,
+								end: user.end,
+						  })
+						: null,
 			});
 		}
 	};
 	getStaffs = async () => {
 		const users: any = await Main.createQuery(
-			"SELECT * FROM users WHERE is_staff=1"
+			`SELECT users.id, users.discord_id, users.username, users.discriminator, users.used_commands, users.is_staff,vip.id as vip_id, vip.start, vip.end FROM users LEFT JOIN vip on vip.user=users.id WHERE is_staff=1`
 		);
 		users.forEach((item: { [key: string]: any }, index: number) => {
 			users[index] = new User({
@@ -64,7 +88,14 @@ class Users implements usersModel {
 				discriminator: item.discriminator,
 				usedCommands: item.used_commands,
 				isStaff: item.is_staff,
-				isVip: item.is_vip,
+				vip:
+					"vip_id" in item
+						? new Vip({
+								id: item.vip_id,
+								start: item.start,
+								end: item.end,
+						  })
+						: null,
 			});
 		});
 		return users;
@@ -80,7 +111,7 @@ class Users implements usersModel {
 			discriminator: discriminator,
 			usedCommands: 0,
 			isStaff: false,
-			isVip: false,
+			vip: null,
 		});
 	};
 	savesCount = async () => {

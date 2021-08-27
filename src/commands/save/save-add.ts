@@ -7,7 +7,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 	const content = interaction.options.getString("content", true);
 	const media = interaction.options.getString("media", false);
 	const title = interaction.options.getString("title", false);
-	if (String(content).length > 200 && !user?.isVip) {
+	if (String(content).length > 200 && !user?.vip) {
 		return await interaction.reply({
 			embeds: [
 				new Embed(user).data
@@ -19,7 +19,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 		});
 	}
 	if (media) {
-		if (!user?.isVip) {
+		if (!user?.vip) {
 			return await interaction.reply({
 				embeds: [
 					new Embed(user).data

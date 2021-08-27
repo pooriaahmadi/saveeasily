@@ -5,7 +5,7 @@ class Embed {
 	data: MessageEmbed;
 	constructor(user?: userModel) {
 		this.data = new MessageEmbed().setFooter(footer).setTimestamp();
-		if (user?.isVip) {
+		if (user?.vip && !user?.vip.isExpired()) {
 			this.data.setColor("#00eeff");
 		} else if (user?.isStaff) {
 			this.data.setColor("#63ff69");

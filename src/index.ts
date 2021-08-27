@@ -133,7 +133,7 @@ client.on("interactionCreate", async (interaction: Interaction) => {
 client.on("guildCreate", async (guild: Guild) => {
 	updateStatus();
 	const user = await users.getByDiscordId(guild.ownerId);
-	if (guild.memberCount < 20 && !user?.isVip) {
+	if (guild.memberCount < 20 && !user?.vip) {
 		await guild.leave();
 		new WebhookClient({ url: client.database.guilds }).send({
 			content: `I left ${guild.name} because it has less member than 20`,

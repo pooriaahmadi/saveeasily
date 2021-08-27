@@ -21,7 +21,7 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 		}
 	}
 	let permissionsString: string = "";
-	if (finalUser?.isVip) {
+	if (finalUser?.vip && !finalUser?.vip.isExpired()) {
 		permissionsString += "<:diamond:878301033300910080> **`Vip`**\n";
 	}
 	if (finalUser?.isStaff) {
@@ -44,6 +44,15 @@ const execute = async ({ interaction, client, user }: executeInputs) => {
 				mentionedUser ? mentionedUser.avatarURL() : interaction.user.avatarURL()
 			)
 		);
+	if (finalUser?.vip && !finalUser?.vip.isExpired()) {
+		embed.addField(
+			"Vip",
+			`Started on: **<t:${
+				finalUser.vip.start.getTime() / 1000
+			}:d>**\nExpiration: **<t:${finalUser.vip.end.getTime() / 1000}:d>**`,
+			true
+		);
+	}
 	return await interaction.editReply({
 		embeds: [embed],
 	});

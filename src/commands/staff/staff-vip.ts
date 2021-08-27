@@ -21,9 +21,9 @@ const execute = async ({ interaction, client }: executeInputs) => {
 			return await interaction.reply({
 				content: `${user.username}#${
 					user.discriminator
-				} is now a VIP user SHEEEESH\nUntil: **<t:${
+				} is now a VIP user SHEEEESH\nUntil: **<t:${Math.floor(
 					currentDate.getTime() / 1000
-				}:d>**`,
+				)}:d>**`,
 			});
 		}
 	} else {

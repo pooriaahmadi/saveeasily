@@ -7,7 +7,7 @@ import {
 import Main from "../databases/main";
 import Save from "./save";
 const mariaDBDate = (date: Date) => {
-	return `${date.getUTCFullYear()}-${date.getMonth()}-${date.getDate()}`;
+	return `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}-${date.getDate()}`;
 };
 class User implements userModel {
 	id;

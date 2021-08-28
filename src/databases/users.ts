@@ -102,7 +102,7 @@ class Users implements usersModel {
 	};
 	create = async ({ discordId, username, discriminator }: usersModelInput) => {
 		const user: any = await Main.createQuery(
-			`INSERT INTO users(id, discord_id, username, discriminator, used_commands, is_staff, is_vip) VALUES (NULL, '${discordId}', '${username}', '${discriminator}', 0, 0, 0)`
+			`INSERT INTO users(id, discord_id, username, discriminator, used_commands, is_staff) VALUES (NULL, '${discordId}', '${username}', '${discriminator}', 0, 0)`
 		);
 		return new User({
 			id: user.insert_id,

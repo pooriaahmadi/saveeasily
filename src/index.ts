@@ -11,6 +11,7 @@ import channels from "./database.json";
 
 import Embed from "./classes/embed";
 import users from "./databases/users";
+import Main from "./databases/main";
 // actual app
 dotenv.config();
 declare module "discord.js" {
@@ -59,12 +60,22 @@ const updateStatus = () => {
 		type: "WATCHING",
 	});
 };
-client.once("ready", () => {
+client.once("ready", async () => {
 	console.log(chalk.greenBright(`Logged in as ${client.user?.username}`));
 	updateStatus();
 	setInterval(updateStatus, 60 * 1000);
-	new WebhookClient({ url: client.database.logs }).send({
+	await new WebhookClient({ url: client.database.logs }).send({
 		content: `${client.user?.username} is now ready!`,
+	});
+	const guilds: any = await Main.createQuery("SELECT * FROM guilds");
+	client.guilds.cache.forEach(async (guild) => {
+		if (
+			!guilds.find((e: { [key: string]: string }) => e.discord_id === guild.id)
+		) {
+			await Main.createQuery(
+				`INSERT INTO guilds (discord_id) VALUES ('${guild.id}');`
+			);
+		}
 	});
 });
 
@@ -148,6 +159,9 @@ client.on("guildCreate", async (guild: Guild) => {
 					.setThumbnail(guild.iconURL() || "https://discord.com"),
 			],
 		});
+		await Main.createQuery(
+			`INSERT INTO guilds (discord_id) VALUES ('${guild.id}');`
+		);
 	}
 });
 client.on("guildDelete", async (guild: Guild) => {
@@ -164,6 +178,7 @@ client.on("guildDelete", async (guild: Guild) => {
 				.setThumbnail(guild.iconURL() || "https://discord.com"),
 		],
 	});
+	await Main.createQuery(`DELETE FROM guilds WHERE discord_id='${guild.id}'`);
 });
 
 client.login(process.env.TOKEN);

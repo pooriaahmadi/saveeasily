@@ -1,4 +1,5 @@
 // modules
+import express from "express";
 import { Guild, Intents, Interaction, WebhookClient } from "discord.js";
 import Client from "./classes/client";
 import Command from "./classes/command";
@@ -14,6 +15,13 @@ import users from "./databases/users";
 import Main from "./databases/main";
 // actual app
 dotenv.config();
+const app = express();
+app.get("/", (request, response) => {
+	response.send("alive");
+});
+app.listen(process.env.PORT, () => {
+	console.log("app is listening.");
+});
 declare module "discord.js" {
 	interface Channel {
 		send: (message: any) => Promise<any>;

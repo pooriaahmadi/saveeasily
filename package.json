@@ -3,6 +3,9 @@
 	"version": "1.0.0",
 	"description": "A discord bot for saving stuff",
 	"main": "src/index.ts",
+	"engines": {
+		"node": "16.x.x"
+	},
 	"scripts": {
 		"start": "npm run build && node build/index.js",
 		"start-build": "node build/index.js",

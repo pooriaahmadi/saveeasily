@@ -29,11 +29,7 @@ declare module "discord.js" {
 }
 
 const client = new Client({
-	intents: [
-		Intents.FLAGS.GUILDS,
-		Intents.FLAGS.GUILD_PRESENCES,
-		Intents.FLAGS.GUILD_MESSAGES,
-	],
+	intents: [Intents.FLAGS.GUILDS],
 });
 client.database = channels;
 console.log(chalk.yellow("=-=-=-= Slash Commands =-=-=-="));
